@@ -1,4 +1,4 @@
-﻿using Core.Librarys;
+using Core.Librarys;
 using Core.Servicers.Instances;
 using Core.Servicers.Interfaces;
 using Newtonsoft.Json;
@@ -26,6 +26,7 @@ namespace UI.ViewModels
         private readonly IAppData appData;
         private readonly IWebData _webData;
         private readonly IUIServicer _uiServicer;
+        private readonly IWebSiteCategorys _webSiteCategorys;
 
         public Command GotoListCommand { get; set; }
         /// <summary>
@@ -58,13 +59,14 @@ namespace UI.ViewModels
         public Command DirectoriesCommand { get; set; }
 
 
-        public CategoryPageVM(ICategorys categorys, MainViewModel mainVM, IAppData appData, IWebData webData_, IUIServicer uIServicer_)
+        public CategoryPageVM(ICategorys categorys, MainViewModel mainVM, IAppData appData, IWebData webData_, IUIServicer uIServicer_, IWebSiteCategorys webSiteCategorys_)
         {
             this.categorys = categorys;
             this.mainVM = mainVM;
             this.appData = appData;
             _webData = webData_;
             _uiServicer = uIServicer_;
+            _webSiteCategorys = webSiteCategorys_;
 
             GotoListCommand = new Command(new Action<object>(OnGotoList));
             EditCommand = new Command(new Action<object>(OnEdit));
@@ -370,7 +372,7 @@ namespace UI.ViewModels
                     return;
                 }
 
-                var category = _webData.CreateWebSiteCategory(new Core.Models.Db.WebSiteCategoryModel()
+                var category = _webSiteCategorys.Create(new Core.Models.WebSiteCategoryModel()
                 {
                     Color = EditColor,
                     IconFile = EditIconFile,
@@ -436,7 +438,7 @@ namespace UI.ViewModels
                 category.IconFile = EditIconFile;
                 category.Color = EditColor;
 
-                _webData.UpdateWebSiteCategory(category);
+                _webSiteCategorys.Update(category);
 
                 var item = WebCategoryData.Where(m => m.Data.ID == category.ID).FirstOrDefault();
                 var index = WebCategoryData.IndexOf(item);
@@ -460,7 +462,7 @@ namespace UI.ViewModels
             bool isConfirm = await _uiServicer.ShowConfirmDialogAsync("删除分类", "是否确认删除该分类？");
             if (isConfirm)
             {
-                _webData.DeleteWebSiteCategory(SelectedWebCategoryItem.Data);
+                _webSiteCategorys.Delete(SelectedWebCategoryItem.Data);
 
                 //  从界面移除
                 WebCategoryData.Remove(SelectedWebCategoryItem);

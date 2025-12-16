@@ -1,4 +1,4 @@
-﻿using Core;
+using Core;
 using Core.Librarys;
 using Core.Librarys.SQLite;
 using Core.Servicers.Instances;
@@ -105,6 +105,7 @@ namespace UI
             services.AddSingleton<IDateTimeObserver, DateTimeObserver>();
             services.AddSingleton<IAppData, AppData>();
             services.AddSingleton<ICategorys, Categorys>();
+            services.AddSingleton<IWebSiteCategorys, WebSiteCategorys>();
             services.AddSingleton<IWebFilter, WebFilter>();
 
             //  UI服务
